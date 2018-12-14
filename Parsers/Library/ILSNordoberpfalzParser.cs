@@ -27,8 +27,8 @@ namespace AlarmWorkflow.Parser.Library
         #region Constants
 
         private static readonly string[] Keywords = new[] { 
-              "EINSATZNUMMER", "NAME", "STRAßE","ORT", "OBJEKT", 
-            "STATION", "SCHLAGW.","STICHWORT","PRIO.","ALARMIERT", "RUFNUMMER" };
+              "EINSATZNUMMER", "STRAßE", "ORT", "OBJEKT", "EINSATZPLANNR.",
+            "STATION", "SCHLAGW.", "STICHWORT", "NAME", "GERÄT", "ALARMIERT"};
 
         #endregion
 
@@ -36,13 +36,6 @@ namespace AlarmWorkflow.Parser.Library
 
         private bool GetSection(String line, ref CurrentSection section, ref bool keywordsOnly)
         {
-            //MI TTE I LER must be considered when using tesseract because of recognition problems.
-            if (line.Contains("MITTEILER") || line.Contains("M I TTE I LER"))
-            {
-                section = CurrentSection.BMitteiler;
-                keywordsOnly = true;
-                return true;
-            }
             if (line.Contains("EINSATZORT"))
             {
                 section = CurrentSection.CEinsatzort;
@@ -62,15 +55,21 @@ namespace AlarmWorkflow.Parser.Library
                 keywordsOnly = true;
                 return true;
             }
-            if (line.Contains("BEMERKUNG") || line.Contains("OBJEKTINFORMATION"))
+            if (line.Contains("BEMERKUNG"))
             {
                 section = CurrentSection.GBemerkung;
                 keywordsOnly = false;
                 return true;
             }
+            if (line.Contains("OBJEKTINFORMATION"))
+            {
+                section = CurrentSection.HObjektinformation;
+                keywordsOnly = false;
+                return true;
+            }
             if (line.Contains("ENDE FAX"))
             {
-                section = CurrentSection.HFooter;
+                section = CurrentSection.IFooter;
                 keywordsOnly = false;
                 return true;
             }
@@ -91,7 +90,7 @@ namespace AlarmWorkflow.Parser.Library
             bool keywordsOnly = true;
 
             InnerSection innerSection = InnerSection.AStraße;
-            for (int i = 0; i < lines.Length - 5; i++)
+            for (int i = 0; i < lines.Length - 1; i++)
             {
                 try
                 {
@@ -101,9 +100,8 @@ namespace AlarmWorkflow.Parser.Library
                         continue;
                     }
 
-                    // Try to parse the header and extract date and time if possible
-                    operation.Timestamp = ParserUtility.ReadFaxTimestamp(line, operation.Timestamp);
-
+                    // The date is hard-coded.
+                    operation.Timestamp = DateTime.Now;
 
                     if (GetSection(line.Trim(), ref section, ref keywordsOnly))
                     {
@@ -158,20 +156,6 @@ namespace AlarmWorkflow.Parser.Library
                                 }
                             }
                             break;
-                        case CurrentSection.BMitteiler:
-                            {
-                                // This switch would not be necessary in this section (there is only "Name")...
-                                switch (prefix)
-                                {
-                                    case "NAME":
-                                        operation.Messenger = msg;
-                                        break;
-                                    case "RUFNUMMER":
-                                        operation.Messenger = operation.Messenger.AppendLine(string.Format("Nr.: {0}", msg));
-                                        break;
-                                }
-                            }
-                            break;
                         case CurrentSection.CEinsatzort:
                             {
 
@@ -182,9 +166,9 @@ namespace AlarmWorkflow.Parser.Library
                                             innerSection = InnerSection.AStraße;
                                             string street, streetNumber, appendix;
                                             ParserUtility.AnalyzeStreetLine(msg, out street, out streetNumber, out appendix);
-                                            operation.CustomData["Einsatzort Zusatz"] = appendix;
                                             operation.Einsatzort.Street = street;
                                             operation.Einsatzort.StreetNumber = streetNumber;
+                                            if (!String.IsNullOrEmpty(appendix)) { operation.CustomData["Einsatzort Zusatz"] = appendix; }
                                         }
                                         break;
                                     case "ORT":
@@ -212,9 +196,13 @@ namespace AlarmWorkflow.Parser.Library
                                         innerSection = InnerSection.CObjekt;
                                         operation.Einsatzort.Property = msg;
                                         break;
+                                    case "EINSATZPLANNR.":
+                                        innerSection = InnerSection.CObjekt;
+                                        operation.OperationPlan = msg;
+                                        break;
                                     case "STATION":
                                         innerSection = InnerSection.DStation;
-                                        operation.CustomData["Einsatzort Station"] = msg;
+                                        if (!String.IsNullOrEmpty(msg)) { operation.CustomData["Einsatzort Station"] = msg; }
                                         break;
                                     default:
                                         switch (innerSection)
@@ -247,9 +235,6 @@ namespace AlarmWorkflow.Parser.Library
                                     case "STICHWORT":
                                         operation.Keywords.EmergencyKeyword = msg;
                                         break;
-                                    case "PRIO.":
-                                        operation.Priority = msg;
-                                        break;
                                 }
                             }
                             break;
@@ -260,15 +245,15 @@ namespace AlarmWorkflow.Parser.Library
                                     case "NAME":
                                         last.FullName = msg.Trim();
                                         break;
-                                    case "ALARMIERT":
+                                    case "GERÄT":
                                         // Only add to requested equipment if there is some text,
                                         // otherwise the whole vehicle is the requested equipment
-                                        if (!string.IsNullOrWhiteSpace(msg))
-                                        {
-                                            last.Timestamp = ParserUtility.TryGetTimestampFromMessage(msg, DateTime.Now).ToString();
-                                        }
+                                        if (!string.IsNullOrWhiteSpace(msg)) { last.RequestedEquipment.Add(msg); }
+                                        break;
+                                    case "ALARMIERT":
+                                        last.Timestamp = ParserUtility.TryGetTimestampFromMessage(msg, DateTime.Now).ToString();
+                                        // This line will end the construction of this resource. Add it to the list and go to the next.
                                         operation.Resources.Add(last);
-
                                         last = new OperationResource();
                                         break;
                                 }
@@ -280,7 +265,13 @@ namespace AlarmWorkflow.Parser.Library
                                 operation.Comment = operation.Comment.AppendLine(msg);
                             }
                             break;
-                        case CurrentSection.HFooter:
+                        case CurrentSection.HObjektinformation:
+                            {
+                                // Append with newline at the end in case that the message spans more than one line
+                                operation.Picture = operation.Picture.AppendLine(msg);
+                            }
+                            break;
+                        case CurrentSection.IFooter:
                             // The footer can be ignored completely.
                             break;
                     }
@@ -305,10 +296,11 @@ namespace AlarmWorkflow.Parser.Library
             EEinsatzgrund,
             FEinsatzmittel,
             GBemerkung,
+            HObjektinformation,
             /// <summary>
             /// Footer text. Introduced by "ENDE FAX". Can be ignored completely.
             /// </summary>
-            HFooter,
+            IFooter,
         }
         private enum InnerSection
         {
