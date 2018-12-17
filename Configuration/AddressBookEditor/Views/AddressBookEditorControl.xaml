@@ -17,8 +17,8 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.3*" />
-            <ColumnDefinition Width="0.7*" />
+            <ColumnDefinition Width="0.2*" />
+            <ColumnDefinition Width="0.8*" />
         </Grid.ColumnDefinitions>
 
         <!-- Entries list -->

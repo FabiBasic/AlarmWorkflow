@@ -23,6 +23,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Web;
 using AlarmWorkflow.Shared.Diagnostics;
+using AlarmWorkflow.BackendService.AddressingContracts.EntryObjects;
 
 namespace AlarmWorkflow.Job.PushJob
 {
@@ -41,10 +42,11 @@ namespace AlarmWorkflow.Job.PushJob
 
         #region Methods
 
-        internal static void SendNotifications(IEnumerable<string> apiKeys, string application, string header, string message)
+        internal static void SendNotifications(IList<PushEntryObject> apiKeys, string application, string header, string message)
         {
             var data = new NameValueCollection();
             data["user"] = "";
+            data["device"] = "";
             data["priority"] = Priority;
             data["message"] = message;
             data["title"] = header;
@@ -58,7 +60,8 @@ namespace AlarmWorkflow.Job.PushJob
             {
                 using (var client = new WebClient())
                 {
-                    data.Set("user", apiKey);
+                    data.Set("user", apiKey.RecipientApiKey);
+                    data.Set("device", apiKey.RecipientDeviceName);
 
                     client.Headers[HttpRequestHeader.ContentType] = RequestContentType;
                     client.UploadValuesAsync(new Uri(RequestUrl + application), data);
@@ -69,6 +72,10 @@ namespace AlarmWorkflow.Job.PushJob
         private static bool Validate(NameValueCollection postParameters)
         {
             if (!postParameters.AllKeys.Contains("user"))
+            {
+                return false;
+            }
+            if (!postParameters.AllKeys.Contains("device"))
             {
                 return false;
             }
