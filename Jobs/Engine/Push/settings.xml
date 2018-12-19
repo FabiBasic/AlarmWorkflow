@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <SettingsConfiguration Version="1" Identifier="PushJob">
-  <Setting Name="MessageContent" Type="System.String">Ort: {Einsatzort}, {Picture}; {Comment}</Setting>
-  <Setting Name="Header" Type="System.String">Feuerwehralarm</Setting>
+  <Setting Name="MessageContentAllInformation" Type="System.String">Ort: {Einsatzort}, {Picture}; {Comment}</Setting>
+  <Setting Name="HeaderAllInformation" Type="System.String">Feuerwehralarm</Setting>
+    <Setting Name="MessageContentFewInformation" Type="System.String">Ort: {Einsatzort}, {Picture}; {Comment}</Setting>
+  <Setting Name="HeaderFewInformation" Type="System.String">Feuerwehralarm</Setting>
   <Setting Name="PushoverApiKey" Type="System.String"></Setting>
 </SettingsConfiguration>

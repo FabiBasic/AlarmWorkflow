@@ -30,10 +30,12 @@ namespace AlarmWorkflow.BackendService.AddressingContracts.AddressProviders
         {
             string consumer = element.TryGetAttributeValue("Consumer", null);
             string recApiKey = element.Value;
+            string recDeviceName = element.TryGetAttributeValue("DeviceName", null);
 
             PushEntryObject geo = new PushEntryObject();
             geo.Consumer = consumer;
             geo.RecipientApiKey = recApiKey;
+            geo.RecipientDeviceName = recDeviceName;
             return geo;
         }
 
@@ -44,6 +46,7 @@ namespace AlarmWorkflow.BackendService.AddressingContracts.AddressProviders
             XElement element = new XElement("dummy");
             element.Add(new XAttribute("Consumer", geo.Consumer));
             element.Value = geo.RecipientApiKey;
+            element.Add(new XAttribute("DeviceName", geo.RecipientDeviceName));
             return element;
         }
 

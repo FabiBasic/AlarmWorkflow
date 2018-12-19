@@ -1,10 +1,15 @@
 ﻿<SettingsDisplayConfiguration>
   <Identifier Name="PushJob" DisplayText="Push-Versand" Parent="Aufgaben">
-    <Setting Name="MessageContent" DisplayText="Nachricht" Description="Der Inhalt der Nachricht." Category="Nachricht" IsDynamic="true"
+    <Setting Name="MessageContentAllInformation" DisplayText="Nachricht alle Informationen" Description="Der Inhalt der Nachricht." Category="Nachricht alle Informationen" IsDynamic="true"
              Editor="ObjectExpressionTypeEditor"
              EditorParameter="AlarmWorkflow.Shared.Core.Operation, AlarmWorkflow.Shared" />
-    <Setting Name="Header" DisplayText="Betreff" Category="Nachricht" IsDynamic="true" />
-
+    <Setting Name="HeaderAllInformation" DisplayText="Betreff alle Informationen" Category="Nachricht alle Informationen" IsDynamic="true" />
+    
+    <Setting Name="MessageContentFewInformation" DisplayText="Nachricht weniger Informationen" Description="Der Inhalt der Nachricht." Category="Nachricht weniger Informationen" IsDynamic="true"
+                Editor="ObjectExpressionTypeEditor"
+                EditorParameter="AlarmWorkflow.Shared.Core.Operation, AlarmWorkflow.Shared" />
+    <Setting Name="HeaderFewInformation" DisplayText="Betreff weniger Informationen" Category="Nachricht weniger Informationen" IsDynamic="true" />
+    
     <Setting Name="PushoverApiKey" DisplayText="Api-Key" Category="Pushover" 
              Description="Der API-Key wird von Pushover benötigt. Genaueres hierzu entnehmen Sie bitte der Dokumentation von Pushover." IsDynamic="true" />
   </Identifier>

@@ -20,8 +20,13 @@ namespace AlarmWorkflow.Job.PushJob
 {
     static class SettingKeysJob
     {
-        internal static readonly SettingKey MessageContent = SettingKey.Create("PushJob", "MessageContent");
-        internal static readonly SettingKey Header = SettingKey.Create("PushJob", "Header");
+        // All Information
+        internal static readonly SettingKey MessageContentAllInformation = SettingKey.Create("PushJob", "MessageContentAllInformation");
+        internal static readonly SettingKey HeaderAllInformation = SettingKey.Create("PushJob", "HeaderAllInformation");
+        // Few Information
+        internal static readonly SettingKey MessageContentFewInformation = SettingKey.Create("PushJob", "MessageContentFewInformation");
+        internal static readonly SettingKey HeaderFewInformation = SettingKey.Create("PushJob", "HeaderFewInformation");
+        // All and Few Information
         internal static readonly SettingKey PushoverApiKey = SettingKey.Create("PushJob", "PushoverApiKey");
     }
 }

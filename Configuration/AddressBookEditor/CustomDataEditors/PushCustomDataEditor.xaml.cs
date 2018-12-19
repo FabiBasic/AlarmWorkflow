@@ -54,6 +54,7 @@ namespace AlarmWorkflow.Windows.Configuration.AddressBookEditor.CustomDataEditor
                 PushEntryObject geo = new PushEntryObject();
                 geo.Consumer = cboConsumer.Text;
                 geo.RecipientApiKey = txtRecipientApiKey.Text;
+                geo.RecipientDeviceName = txtRecipientDeviceName.Text;
                 return geo;
             }
             set
@@ -61,6 +62,7 @@ namespace AlarmWorkflow.Windows.Configuration.AddressBookEditor.CustomDataEditor
                 PushEntryObject geo = (PushEntryObject)value;
                 cboConsumer.Text = geo.Consumer;
                 txtRecipientApiKey.Text = geo.RecipientApiKey;
+                txtRecipientDeviceName.Text = geo.RecipientDeviceName;
             }
         }
 

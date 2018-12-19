@@ -39,7 +39,7 @@ namespace AlarmWorkflow.BackendService.AddressingContracts.EntryObjects
         /// <summary>
         /// Defines the consumers that are supported by default.
         /// </summary>
-        public static readonly string[] DefaultConsumers = { "NMA", "Prowl", "eAlarm", "Pushalot", "Pushover", "fAlarm", "Alarmiator" };
+        public static readonly string[] DefaultConsumers = { "NMA-All", "NMA-Few", "Prowl-All", "Prowl-Few", "eAlarm-All", "eAlarm-Few", "Pushalot-All", "Pushalot-Few", "Pushover-All", "Pushover-Few", "fAlarm-All", "fAlarm-Few", "Alarmiator-All", "Alarmiator-Few" };
         #endregion
 
         #region Properties
@@ -54,6 +54,11 @@ namespace AlarmWorkflow.BackendService.AddressingContracts.EntryObjects
         /// </summary>
         [DataMember]
         public string RecipientApiKey { get; set; }
+        /// <summary>
+        /// Gets/sets the Device-Name of the recipient.
+        /// </summary>
+        [DataMember]
+        public string RecipientDeviceName { get; set; }
 
         #endregion
     }
