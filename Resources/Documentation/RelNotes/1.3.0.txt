@@ -1,0 +1,19 @@
+﻿AlarmWorkflow v1.3.0 Release Notes
+====================================
+
+Änderungen seit v1.2.0
+------------------------
+
+Generelles
+----------
+
+  * Tesseract ist nicht mehr standardmäßig im Projekt enthalten und muss extra speziell installiert werden
+
+Parser
+----------------
+Hinzugefügt:
+
+Bearbeitet
+
+Gelöste Probleme
+----------------
