@@ -39,7 +39,7 @@ namespace AlarmWorkflow.BackendService.AddressingContracts.EntryObjects
         /// <summary>
         /// Defines the consumers that are supported by default.
         /// </summary>
-        public static readonly string[] DefaultConsumers = { "NMA-All", "NMA-Few", "Prowl-All", "Prowl-Few", "eAlarm-All", "eAlarm-Few", "Pushalot-All", "Pushalot-Few", "Pushover-All", "Pushover-Few", "fAlarm-All", "fAlarm-Few", "Alarmiator-All", "Alarmiator-Few" };
+        public static readonly string[] DefaultConsumers = { "NMA-All", "NMA-Few", "Prowl-All", "Prowl-Few", "eAlarm", "Pushalot-All", "Pushalot-Few", "Pushover-All", "Pushover-Few", "fAlarm", "Alarmiator"};
         #endregion
 
         #region Properties
