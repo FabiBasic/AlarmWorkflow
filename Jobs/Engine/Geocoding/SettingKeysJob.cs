@@ -25,5 +25,7 @@ namespace AlarmWorkflow.Job.Geocoding
     {
         internal static readonly SettingKey Provider = SettingKey.Create("Geocoding", "Provider");
         internal static readonly SettingKey ApiKey = SettingKey.Create("Geocoding", "ApiKey");
+        internal static readonly SettingKey MaxEntfernungVerwenden = SettingKey.Create("Geocoding", "MaxEntfernungVerwenden");
+        internal static readonly SettingKey MaxEntfernung = SettingKey.Create("Geocoding", "MaxEntfernung");
     }
 }

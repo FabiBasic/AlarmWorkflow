@@ -2,4 +2,6 @@
 <SettingsConfiguration Version="1" Identifier="Geocoding">
   <Setting Name="Provider" Type="System.String">Google</Setting>
   <Setting Name="ApiKey" Type="System.String"></Setting>
+  <Setting Name="MaxEntfernungVerwenden" Type="System.Boolean">False</Setting>
+  <Setting Name="MaxEntfernung" Type="System.String">20</Setting>
 </SettingsConfiguration>

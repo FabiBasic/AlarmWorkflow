@@ -176,5 +176,15 @@ namespace AlarmWorkflow.Job.Geocoding.Properties {
                 return ResourceManager.GetString("UsingProviderTrace", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Entfernung zu weit 
+        /// </summary>
+        internal static string EntfernungZuWeit {
+            get
+            {
+                return ResourceManager.GetString("EntfernungZuWeit", resourceCulture);
+            }
+        }
     }
 }

@@ -5,6 +5,8 @@
   <Setting Name="FD.ZipCode" Type="System.String" IsNull="True" />
   <Setting Name="FD.Street" Type="System.String" IsNull="True" />
   <Setting Name="FD.StreetNumber" Type="System.String" IsNull="True" />
+  <Setting Name="FD.Latitude" Type="System.String" IsNull="True" />
+  <Setting Name="FD.Longitude" Type="System.String" IsNull="True" />
   <Setting Name="ReplaceDictionary" Type="AlarmWorkflow.Shared.Specialized.ReplaceDictionary, AlarmWorkflow.Shared" IsNull="False">
     <![CDATA[<ReplaceDictionary InterpretAsRegex="false">
   <Entry Old="—" New="-" />

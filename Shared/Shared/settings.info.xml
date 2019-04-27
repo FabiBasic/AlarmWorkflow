@@ -7,6 +7,8 @@
     <Setting Name="FD.ZipCode" DisplayText="PLZ" Category="Feuerwehr" />
     <Setting Name="FD.Street" DisplayText="Straße" Category="Feuerwehr" />
     <Setting Name="FD.StreetNumber" DisplayText="Hausnummer" Category="Feuerwehr" />
+    <Setting Name="FD.Latitude" DisplayText="Breitengrad" Category="Feuerwehr" />
+    <Setting Name="FD.Longitude" DisplayText="Längengrad" Category="Feuerwehr" />
     
     <Setting Name="ReplaceDictionary" DisplayText="Korrekturwörterbuch" Category="Auswertung" Editor="ReplaceDictionaryTypeEditor"
              Description="Ersetzt falsch erkannte Buchstabenkombinationen durch richtige." />

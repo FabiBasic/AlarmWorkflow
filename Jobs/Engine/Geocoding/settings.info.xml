@@ -4,5 +4,9 @@
              Editor="ExportTypeEditor" EditorParameter="AlarmWorkflow.Job.Geocoding.IGeoCoder, AlarmWorkflow.Job.Geocoding" IsDynamic="true" />
     <Setting Name="ApiKey" DisplayText="Api-Key" Description="Der API-Key wird von manchen Anbietern benötigt. Genaueres hierzu entnehmen Sie bitte dem Handbuch bzw. dem Wiki."
              IsDynamic="true"/>
+    <Setting Name="MaxEntfernungVerwenden" DisplayText="Maximale Entfernung aktivieren" Description=""
+            IsDynamic="true" Category="Entfernung"/>
+    <Setting Name="MaxEntfernung" DisplayText="Maximale Entfernung" Description="Die maximale Entfernung von Feuerwehrhaus bis Einsatzort (Luftlinie)."
+             IsDynamic="true" Category="Entfernung"/>
   </Identifier>
 </SettingsDisplayConfiguration>

@@ -41,7 +41,7 @@ namespace AlarmWorkflow.Job.Geocoding
         {
             var providerName = _settings.GetSetting(SettingKeysJob.Provider).GetValue<string>();
             _provider = ExportedTypeLibrary.Import<IGeoCoder>(providerName);
-            
+
             Logger.Instance.LogFormat(LogType.Debug, this, Properties.Resources.UsingProviderTrace, providerName);
 
             if (_provider.IsApiKeyRequired)
@@ -53,6 +53,19 @@ namespace AlarmWorkflow.Job.Geocoding
                     Logger.Instance.LogFormat(LogType.Error, this, Properties.Resources.NoKeyForGeocodingService, providerName);
                 }
             }
+        }
+
+        private bool Abstand(decimal Point1_Latitude, decimal Point1_Longitude, decimal Point2_Latitude, decimal Point2_Longitude, double Distance)
+        {
+            decimal DecPi = Convert.ToDecimal(Math.PI / 180);
+            double CurrentDistance = 6371 * Math.Acos(
+                Math.Sin(Convert.ToDouble(DecPi * Point1_Latitude)) *
+                Math.Sin(Convert.ToDouble(DecPi * Point2_Latitude)) +
+                Math.Cos(Convert.ToDouble(DecPi * Point1_Latitude)) *
+                Math.Cos(Convert.ToDouble(DecPi * Point2_Latitude)) *
+                Math.Cos(Convert.ToDouble(DecPi * (Point2_Longitude - Point1_Longitude))));
+            if (CurrentDistance <= Distance) return true;
+            return false;
         }
 
         #endregion
@@ -73,7 +86,7 @@ namespace AlarmWorkflow.Job.Geocoding
         {
             _settings = serviceProvider.GetService<ISettingsServiceInternal>();
             _settings.SettingChanged += (sender, args) => InitializeProvider();
-            
+
             InitializeProvider();
 
             return true;
@@ -87,13 +100,38 @@ namespace AlarmWorkflow.Job.Geocoding
                 {
                     return;
                 }
-
                 GeocoderLocation geocoderLocation = _provider.Geocode(operation.Einsatzort);
+
                 if (geocoderLocation != null)
                 {
-                    //The most of the widgets and so need the "english-format" (point instead of comma)!
-                    operation.Einsatzort.GeoLongitude = geocoderLocation.Longitude;
-                    operation.Einsatzort.GeoLatitude = geocoderLocation.Latitude;
+                    bool MaxEntfernungAktiv = _settings.GetSetting("Geocoding", "MaxEntfernungVerwenden").GetValue<bool>();
+
+                    if (MaxEntfernungAktiv)
+                    {
+                        string MaxEntfernung = _settings.GetSetting("Geocoding", "MaxEntfernung").GetValue<string>();
+                        string FDLatitude = _settings.GetSetting("Shared", "FD.Latitude").GetValue<string>();
+                        string FDLongitude = _settings.GetSetting("Shared", "FD.Longitude").GetValue<string>();
+
+                        if (Abstand(Convert.ToDecimal(FDLatitude), Convert.ToDecimal(FDLongitude), Convert.ToDecimal(geocoderLocation.Latitude), Convert.ToDecimal(geocoderLocation.Longitude), Convert.ToDouble(MaxEntfernung)))
+                        {
+                            operation.Einsatzort.GeoLongitude = geocoderLocation.Longitude;
+                            operation.Einsatzort.GeoLatitude = geocoderLocation.Latitude;
+                        }
+                        else
+                        {
+                            Logger.Instance.LogFormat(LogType.Warning, this, Properties.Resources.EntfernungZuWeit);
+                            Logger.Instance.LogFormat(LogType.Warning, this, FDLatitude);
+                            Logger.Instance.LogFormat(LogType.Warning, this, FDLongitude);
+                            Logger.Instance.LogFormat(LogType.Warning, this, MaxEntfernung);
+                            Logger.Instance.LogFormat(LogType.Warning, this, geocoderLocation.Latitude.ToString());
+                            Logger.Instance.LogFormat(LogType.Warning, this, geocoderLocation.Longitude.ToString());
+                        }
+                    }
+                    else
+                    {
+                        operation.Einsatzort.GeoLongitude = geocoderLocation.Longitude;
+                        operation.Einsatzort.GeoLatitude = geocoderLocation.Latitude;
+                    }
                 }
                 else
                 {

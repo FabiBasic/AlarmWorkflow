@@ -50,5 +50,13 @@ namespace AlarmWorkflow.Shared
         /// Identifies the "Printing queues configuration" setting.
         /// </summary>
         public static readonly SettingKey PrintingQueuesConfiguration = SettingKey.Create("Shared", "PrintingQueuesConfiguration");
+        /// <summary>
+        /// Latitude 
+        /// </summary>
+        public static readonly SettingKey FDLatitude = SettingKey.Create("Shared", "FD.Latitude");
+        /// <summary>
+        /// Longitude 
+        /// </summary>
+        public static readonly SettingKey FDLongitude = SettingKey.Create("Shared", "FD.Longitude");
     }
 }
