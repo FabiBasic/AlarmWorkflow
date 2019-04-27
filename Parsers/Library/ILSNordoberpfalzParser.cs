@@ -14,6 +14,7 @@
 // along with AlarmWorkflow.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Globalization;
 using AlarmWorkflow.Shared.Core;
 using AlarmWorkflow.Shared.Diagnostics;
 using AlarmWorkflow.Shared.Extensibility;
@@ -99,9 +100,6 @@ namespace AlarmWorkflow.Parser.Library
                     {
                         continue;
                     }
-
-                    // The date is hard-coded.
-                    operation.Timestamp = DateTime.Now;
 
                     if (GetSection(line.Trim(), ref section, ref keywordsOnly))
                     {
@@ -251,7 +249,15 @@ namespace AlarmWorkflow.Parser.Library
                                         if (!string.IsNullOrWhiteSpace(msg)) { last.RequestedEquipment.Add(msg); }
                                         break;
                                     case "ALARMIERT":
-                                        last.Timestamp = ParserUtility.TryGetTimestampFromMessage(msg, DateTime.Now).ToString();
+                                        // In case that parsing the time failed, we just assume that the resource got requested right away.
+                                        if (!string.IsNullOrEmpty(msg))
+                                        {
+                                            DateTime dt;
+                                            DateTime.TryParseExact(msg, "d.M.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
+                                            last.Timestamp = dt.ToString();
+                                            operation.Timestamp = dt;
+                                        }
+                                        
                                         // This line will end the construction of this resource. Add it to the list and go to the next.
                                         operation.Resources.Add(last);
                                         last = new OperationResource();
