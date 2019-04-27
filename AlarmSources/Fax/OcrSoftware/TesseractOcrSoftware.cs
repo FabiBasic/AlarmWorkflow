@@ -34,7 +34,7 @@ namespace AlarmWorkflow.AlarmSource.Fax.OcrSoftware
             {
                 proc.WorkingDirectory = options.SoftwarePath;
                 proc.FileName = path;
-                proc.Arguments = string.Format("\"{0}\" \"{1}\" --tessdata-dir tessdata --psm 6 -l deu_alt+ils", options.ImagePath, options.AnalyzedFileDestinationPath);
+                proc.Arguments = string.Format("\"{0}\" \"{1}\" --tessdata-dir tessdata --psm 6 -l deu", options.ImagePath, options.AnalyzedFileDestinationPath);
 
                 proc.StartAndWait();
             }

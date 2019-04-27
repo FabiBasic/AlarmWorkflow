@@ -143,7 +143,7 @@ namespace AlarmWorkflow.AlarmSource.Fax
                 dev.Device = "tiffgray";
                 dev.GraphicsAlphaBits = GhostscriptImageDeviceAlphaBits.V_4;
                 dev.TextAlphaBits = GhostscriptImageDeviceAlphaBits.V_4;
-                dev.Resolution = 300;
+                dev.Resolution = 200;              
                 dev.InputFiles.Add(file.FullName);
                 dev.OutputPath = tiffFilePath;
                 dev.Process();
