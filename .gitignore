@@ -353,3 +353,4 @@ ASALocalRun/
 .localhistory/
 
 # End of https://www.gitignore.io/api/visualstudio
+Parsers/Library/Properties/launchSettings.json
