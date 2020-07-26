@@ -28,8 +28,8 @@ namespace AlarmWorkflow.Parser.Library
         #region Constants
 
         private static readonly string[] Keywords = new[] { 
-              "EINSATZNUMMER", "STRAßE", "ORT", "OBJEKT", "EINSATZPLANNR.",
-            "STATION", "SCHLAGW.", "STICHWORT", "NAME", "GERÄT", "ALARMIERT"};
+              "EINSATZNR.", "STRAßE", "ORT", "OBJEKT", "EINSATZPLANNUMMER",
+            "STATION", "SCHLAGWORT", "STICHWORT", "EM-NAME", "GEFORD. GERÄT", "ALARMZEIT"};
 
         #endregion
 
@@ -101,6 +101,10 @@ namespace AlarmWorkflow.Parser.Library
                         continue;
                     }
 
+                    // Try to parse the header and extract date and time if possible
+                    operation.Timestamp = ParserUtility.ReadFaxTimestamp(line, operation.Timestamp);
+
+
                     if (GetSection(line.Trim(), ref section, ref keywordsOnly))
                     {
                         continue;
@@ -147,7 +151,7 @@ namespace AlarmWorkflow.Parser.Library
                             {
                                 switch (prefix)
                                 {
-                                    case "EINSATZNUMMER":
+                                    case "EINSATZNR.":
                                         operation.OperationNumber = msg;
                                         break;
 
@@ -194,7 +198,7 @@ namespace AlarmWorkflow.Parser.Library
                                         innerSection = InnerSection.CObjekt;
                                         operation.Einsatzort.Property = msg;
                                         break;
-                                    case "EINSATZPLANNR.":
+                                    case "EINSATZPLANNUMMER":
                                         innerSection = InnerSection.CObjekt;
                                         operation.OperationPlan = msg;
                                         break;
@@ -227,7 +231,7 @@ namespace AlarmWorkflow.Parser.Library
                             {
                                 switch (prefix)
                                 {
-                                    case "SCHLAGW.":
+                                    case "SCHLAGWORT":
                                         operation.Keywords.Keyword = msg;
                                         break;
                                     case "STICHWORT":
@@ -240,22 +244,21 @@ namespace AlarmWorkflow.Parser.Library
                             {
                                 switch (prefix)
                                 {
-                                    case "NAME":
+                                    case "EM-NAME":
                                         last.FullName = msg.Trim();
                                         break;
-                                    case "GERÄT":
+                                    case "GEFORD. GERÄT":
                                         // Only add to requested equipment if there is some text,
                                         // otherwise the whole vehicle is the requested equipment
                                         if (!string.IsNullOrWhiteSpace(msg)) { last.RequestedEquipment.Add(msg); }
                                         break;
-                                    case "ALARMIERT":
+                                    case "ALARMZEIT":
                                         // In case that parsing the time failed, we just assume that the resource got requested right away.
                                         if (!string.IsNullOrEmpty(msg))
                                         {
                                             DateTime dt;
-                                            DateTime.TryParseExact(msg, "d.M.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
+                                            DateTime.TryParseExact(msg, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
                                             last.Timestamp = dt.ToString();
-                                            operation.Timestamp = dt;
                                         }
                                         
                                         // This line will end the construction of this resource. Add it to the list and go to the next.
